@@ -5,6 +5,7 @@
 #include "gtc/type_ptr.hpp"
 #include "Shader.h"
 #include "SDL3_image/SDL_image.h"
+#include "TextureAtlas.h"
 
 int windowWidth = 1920;
 int windowHeight = 1080;
@@ -168,11 +169,11 @@ int main(int argc, char* argv[]) {
         5 * sizeof(float)
     );
 
-    unsigned int dirtBlockTexture = LoadTexture("textures/dirt_block.png");
+    /*unsigned int dirtBlockTexture = LoadTexture("textures/dirt_block.png");
     unsigned int grassSideBlockTexture = LoadTexture("textures/grass_block_side.png");
     unsigned int grassTopBlockTexture = LoadTexture("textures/grass_block_top.png");
 
-    constexpr int STRIDE = 5 * sizeof(float);
+    constexpr int STRIDE = 5 * sizeof(float);*/
 
     // Attribute 0 -> Position
     glEnableVertexArrayAttrib(cubeVAO, 0);
@@ -185,6 +186,19 @@ int main(int argc, char* argv[]) {
     glVertexArrayAttribBinding(cubeVAO, 1, 0);
 
     // end of cube setup
+
+    // texture atlas setup
+    TextureAtlas atlas = BuildAtlas({
+    "textures/dirt_block.png",
+    "textures/grass_block_side.png",
+    "textures/grass_block_top.png",
+    "textures/stone.png",
+    "textures/oak_planks.png"
+        });
+	// end of texture atlas setup
+    AtlasEntry grassTop = atlas.entries["textures/grass_block_top.png"];
+    AtlasEntry grassSide = atlas.entries["textures/grass_block_side.png"];
+    AtlasEntry dirt = atlas.entries["textures/dirt_block.png"];
 
     SDL_ShowWindow(window);
 
@@ -226,7 +240,8 @@ int main(int argc, char* argv[]) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         shader.Use();
-        glBindTextureUnit(0, dirtBlockTexture);
+
+        glBindTextureUnit(0, atlas.textureID);
         shader.SetInt("uTexture", 0);
 
         glm::mat4 model = glm::mat4(1.0f);
