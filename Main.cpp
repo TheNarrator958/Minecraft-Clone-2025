@@ -4,6 +4,7 @@
 #include "glm.hpp"
 #include "gtc/type_ptr.hpp"
 #include "Shader.h"
+#include "SDL3_image/SDL_image.h"
 
 int windowWidth = 1920;
 int windowHeight = 1080;
@@ -16,11 +17,103 @@ unsigned int VBO = 0;
 
 bool running = true;
 
-float triangleVertices[] = {
-     -0.5f, -0.5f, 0.0f,
-      0.5f, -0.5f, 0.0f,
-      0.0f,  0.5f, 0.0f
+float cubeVertices[] = {
+    // Front
+    -0.5f,-0.5f, 0.5f,  0,0,
+     0.5f,-0.5f, 0.5f,  1,0,
+     0.5f, 0.5f, 0.5f,  1,1,
+    -0.5f,-0.5f, 0.5f,  0,0,
+     0.5f, 0.5f, 0.5f,  1,1,
+    -0.5f, 0.5f, 0.5f,  0,1,
+
+    // Back
+     0.5f,-0.5f,-0.5f,  0,0,
+    -0.5f,-0.5f,-0.5f,  1,0,
+    -0.5f, 0.5f,-0.5f,  1,1,
+     0.5f,-0.5f,-0.5f,  0,0,
+    -0.5f, 0.5f,-0.5f,  1,1,
+     0.5f, 0.5f,-0.5f,  0,1,
+
+     // Left
+     -0.5f,-0.5f,-0.5f,  0,0,
+     -0.5f,-0.5f, 0.5f,  1,0,
+     -0.5f, 0.5f, 0.5f,  1,1,
+     -0.5f,-0.5f,-0.5f,  0,0,
+     -0.5f, 0.5f, 0.5f,  1,1,
+     -0.5f, 0.5f,-0.5f,  0,1,
+
+     // Right
+      0.5f,-0.5f, 0.5f,  0,0,
+      0.5f,-0.5f,-0.5f,  1,0,
+      0.5f, 0.5f,-0.5f,  1,1,
+      0.5f,-0.5f, 0.5f,  0,0,
+      0.5f, 0.5f,-0.5f,  1,1,
+      0.5f, 0.5f, 0.5f,  0,1,
+
+      // Top
+      -0.5f, 0.5f, 0.5f,  0,0,
+       0.5f, 0.5f, 0.5f,  1,0,
+       0.5f, 0.5f,-0.5f,  1,1,
+      -0.5f, 0.5f, 0.5f,  0,0,
+       0.5f, 0.5f,-0.5f,  1,1,
+      -0.5f, 0.5f,-0.5f,  0,1,
+
+      // Bottom
+      -0.5f,-0.5f,-0.5f,  0,0,
+       0.5f,-0.5f,-0.5f,  1,0,
+       0.5f,-0.5f, 0.5f,  1,1,
+      -0.5f,-0.5f,-0.5f,  0,0,
+       0.5f,-0.5f, 0.5f,  1,1,
+      -0.5f,-0.5f, 0.5f,  0,1,
 };
+
+unsigned int cubeVAO;
+unsigned int cubeVBO;
+
+unsigned int LoadTexture(const char* path)
+{
+    SDL_Surface* surface = IMG_Load(path);
+
+    // Convert to RGBA32 for OpenGL
+    SDL_Surface* rgbaSurface = SDL_ConvertSurface(
+        surface,
+        SDL_PIXELFORMAT_RGBA32
+    );
+    SDL_DestroySurface(surface);
+
+    unsigned int texture;
+    glCreateTextures(GL_TEXTURE_2D, 1, &texture);
+
+    glTextureStorage2D(
+        texture,
+        1,
+        GL_RGBA8,
+        rgbaSurface->w,
+        rgbaSurface->h
+    );
+
+    glTextureSubImage2D(
+        texture,
+        0,
+        0,
+        0,
+        rgbaSurface->w,
+        rgbaSurface->h,
+        GL_RGBA,
+        GL_UNSIGNED_BYTE,
+        rgbaSurface->pixels
+    );
+
+    // Minecraft-style filtering
+    glTextureParameteri(texture, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTextureParameteri(texture, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTextureParameteri(texture, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTextureParameteri(texture, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    SDL_DestroySurface(rgbaSurface);
+
+    return texture;
+}
 
 int main(int argc, char* argv[]) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -54,43 +147,44 @@ int main(int argc, char* argv[]) {
     glEnable(GL_DEPTH_TEST);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    glCreateVertexArrays(1, &VAO);
-    glCreateBuffers(1, &VBO);
+    // cube setup
+    glCreateVertexArrays(1, &cubeVAO);
+	glCreateBuffers(1, &cubeVBO);
 
+    // Vertex Buffer
     glNamedBufferData(
-        VBO,
-        sizeof(triangleVertices),
-        triangleVertices,
+        cubeVBO,
+        sizeof(cubeVertices),
+        cubeVertices,
         GL_STATIC_DRAW
-    );
+	);
 
-    // Bind VBO to binding point 0 of VAO
+    // Attach Buffers
     glVertexArrayVertexBuffer(
-        VAO,
-        0,          // binding index
-        VBO,
+        cubeVAO,
         0,
-        3 * sizeof(float)
-    );
-
-    // Describe attribute 0
-    glEnableVertexArrayAttrib(VAO, 0);
-
-    glVertexArrayAttribFormat(
-        VAO,
-        0,          // attribute index
-        3,
-        GL_FLOAT,
-        GL_FALSE,
-        0
-    );
-
-    // Attach attribute 0 → binding 0
-    glVertexArrayAttribBinding(
-        VAO,
+        cubeVBO,
         0,
-        0
+        5 * sizeof(float)
     );
+
+    unsigned int dirtBlockTexture = LoadTexture("textures/dirt_block.png");
+    unsigned int grassSideBlockTexture = LoadTexture("textures/grass_block_side.png");
+    unsigned int grassTopBlockTexture = LoadTexture("textures/grass_block_top.png");
+
+    constexpr int STRIDE = 5 * sizeof(float);
+
+    // Attribute 0 -> Position
+    glEnableVertexArrayAttrib(cubeVAO, 0);
+    glVertexArrayAttribFormat(cubeVAO, 0, 3, GL_FLOAT, GL_FALSE, 0);
+    glVertexArrayAttribBinding(cubeVAO, 0, 0);
+
+	// Attribute 1 -> UV
+    glEnableVertexArrayAttrib(cubeVAO, 1);
+    glVertexArrayAttribFormat(cubeVAO, 1, 2, GL_FLOAT, GL_FALSE, 3 * sizeof(float));
+    glVertexArrayAttribBinding(cubeVAO, 1, 0);
+
+    // end of cube setup
 
     SDL_ShowWindow(window);
 
@@ -132,25 +226,24 @@ int main(int argc, char* argv[]) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         shader.Use();
+        glBindTextureUnit(0, dirtBlockTexture);
+        shader.SetInt("uTexture", 0);
 
-        glm::mat4 model = glm::translate(
-            glm::mat4(1.0f),
-            glm::vec3(0.0f, 0.0f, -2.0f)
-        );
+        glm::mat4 model = glm::mat4(1.0f);
         glm::mat4 view = camera.GetViewMatrix();
         glm::mat4 projection = glm::perspective(
             glm::radians(camera.FOV),
             (float)windowWidth / (float)windowHeight,
             0.1f,
-            1000.0f
+            100.0f
         );
 
         shader.SetMat4("model", model);
         shader.SetMat4("view", view);
         shader.SetMat4("projection", projection);
 
-        glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glBindVertexArray(cubeVAO); 
+        glDrawArrays(GL_TRIANGLES, 0, 36);
 
         SDL_GL_SwapWindow(window);
     }

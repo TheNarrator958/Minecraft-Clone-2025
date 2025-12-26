@@ -77,10 +77,13 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\glm-1.0.2\glm;C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\glad\include;C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\SDL3_image-3.2.4\include;C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\SDL3_ttf-3.1.0\include;C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\SDL3-3.2.24\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\SDL3_image-3.2.4\lib\x64;C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\SDL3_ttf-3.1.0\lib\x64;C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\SDL3-3.2.24\lib\x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL3.lib;SDL3_ttf.lib;SDL3_image.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -92,10 +95,13 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\glm-1.0.2\glm;C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\glad\include;C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\SDL3_image-3.2.4\include;C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\SDL3_ttf-3.1.0\include;C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\SDL3-3.2.24\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\SDL3_image-3.2.4\lib\x64;C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\SDL3_ttf-3.1.0\lib\x64;C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\SDL3-3.2.24\lib\x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL3.lib;SDL3_ttf.lib;SDL3_image.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -105,13 +111,13 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\glm-1.0.2\glm;C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\glad\include;C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\SDL3_image-3.2.4\include;C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\SDL3_ttf-3.1.0\include;C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\SDL3-3.2.24\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\glm-1.0.2\glm;C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\glad\include;C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\SDL3_image-3.2.4\include;C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\SDL3_ttf-3.1.0\include;C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\SDL3-3.2.24\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\SDL3_image-3.2.4\lib\x64;C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\SDL3_ttf-3.1.0\lib\x64;C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\SDL3-3.2.24\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL3.lib;SDL3_ttf.lib;SDL3_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\SDL3_image-3.2.4\lib\x64;C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\SDL3_ttf-3.1.0\lib\x64;C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\SDL3-3.2.24\lib\x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL3.lib;SDL3_ttf.lib;SDL3_image.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -123,10 +129,13 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\glm-1.0.2\glm;C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\glad\include;C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\SDL3_image-3.2.4\include;C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\SDL3_ttf-3.1.0\include;C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\SDL3-3.2.24\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\SDL3_image-3.2.4\lib\x64;C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\SDL3_ttf-3.1.0\lib\x64;C:\Users\lyudo\Documents\[1] Current Documents 2025\Visual Studio\Projects\Minecraft Clone\external\SDL3-3.2.24\lib\x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL3.lib;SDL3_ttf.lib;SDL3_image.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

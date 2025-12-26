@@ -86,3 +86,11 @@ void Shader::SetMat4(const std::string& name, const glm::mat4& mat) const {
         &mat[0][0]
     );
 }
+
+void Shader::SetVec3(const std::string& name, const glm::vec3& value) const {
+    glUniform3fv(
+        glGetUniformLocation(ID, name.c_str()),
+        1,
+        &value[0]
+    );
+}

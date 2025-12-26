@@ -19,6 +19,8 @@ public:
 
 	void SetMat4(const std::string& name, const glm::mat4& mat) const;
 
+	void SetVec3(const std::string& name, const glm::vec3& value) const;
+
 private:
 	std::string LoadFile(const char* path);
 	unsigned int CompileShader(unsigned int type, const char* source);
