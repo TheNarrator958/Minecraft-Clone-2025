@@ -1,7 +1,9 @@
 #pragma once
+
 #include <string>
-#include <unordered_map>
 #include <vector>
+#include <unordered_map>
+#include <cstdint>
 
 struct AtlasEntry {
     float u0, v0;
@@ -9,12 +11,12 @@ struct AtlasEntry {
 };
 
 struct TextureAtlas {
-    unsigned int textureID = 0;
-    int atlasWidth = 0;
-    int atlasHeight = 0;
-    int tileSize = 16;
+    unsigned int textureID; // OpenGL texture
+    int atlasWidth;
+    int atlasHeight;
 
     std::unordered_map<std::string, AtlasEntry> entries;
 };
 
-TextureAtlas BuildAtlas(const std::vector<std::string>& files);
+// Builds an atlas and uploads it to OpenGL
+TextureAtlas BuildAtlas(const std::vector<std::string>& imagePaths);

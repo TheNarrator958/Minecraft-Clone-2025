@@ -1,84 +1,69 @@
 #include "TextureAtlas.h"
+
+#include <SDL3/SDL.h>
+#include <SDL3_image/SDL_image.h>
+#include <glad/glad.h>
 #include <iostream>
 
-#include "glad/glad.h"
-#include "SDL3_image/SDL_image.h"
-
-TextureAtlas BuildAtlas(const std::vector<std::string>& files)
+TextureAtlas BuildAtlas(const std::vector<std::string>& imagePaths)
 {
-    TextureAtlas atlas;
-    atlas.tileSize = 16;
+    const int TILE_SIZE = 16;
+    int tilesPerRow = (int)ceil(sqrt(imagePaths.size()));
+    int atlasSize = tilesPerRow * TILE_SIZE;
 
-    const int tilesPerRow = (int)files.size();
-    atlas.atlasWidth = tilesPerRow * atlas.tileSize;
-    atlas.atlasHeight = atlas.tileSize;
-
-    // Create pixel buffer
-    std::vector<unsigned char> pixels(
-        atlas.atlasWidth * atlas.atlasHeight * 4,
-        0
+    SDL_Surface* atlasSurface = SDL_CreateSurface(
+        atlasSize,
+        atlasSize,
+        SDL_PIXELFORMAT_RGBA32
     );
 
-    for (int i = 0; i < files.size(); i++)
+    TextureAtlas atlas{};
+    atlas.atlasWidth = atlasSize;
+    atlas.atlasHeight = atlasSize;
+
+    for (size_t i = 0; i < imagePaths.size(); i++)
     {
-        SDL_Surface* surface = IMG_Load(files[i].c_str());
-        if (!surface) {
-            std::cerr << "Failed to load: " << files[i] << "\n";
+        SDL_Surface* tile = IMG_Load(imagePaths[i].c_str());
+        if (!tile) {
+            SDL_Log("Failed to load %s", imagePaths[i].c_str());
             continue;
         }
 
-        SDL_Surface* rgba = SDL_ConvertSurface(surface, SDL_PIXELFORMAT_RGBA32);
-        SDL_DestroySurface(surface);
+        int x = (i % tilesPerRow) * TILE_SIZE;
+        int y = (i / tilesPerRow) * TILE_SIZE;
 
-        int xOffset = i * atlas.tileSize;
+        SDL_Rect dst{ x, y, TILE_SIZE, TILE_SIZE };
+        SDL_BlitSurface(tile, nullptr, atlasSurface, &dst);
 
-        // Copy pixels into atlas buffer
-        for (int y = 0; y < atlas.tileSize; y++) {
-            for (int x = 0; x < atlas.tileSize; x++) {
-                int src = (y * rgba->w + x) * 4;
-                int dst = ((y * atlas.atlasWidth + (x + xOffset)) * 4);
+        AtlasEntry entry;
+        entry.u0 = (float)x / atlasSize;
+        entry.v0 = (float)y / atlasSize;
+        entry.u1 = (float)(x + TILE_SIZE) / atlasSize;
+        entry.v1 = (float)(y + TILE_SIZE) / atlasSize;
 
-                memcpy(&pixels[dst], &((unsigned char*)rgba->pixels)[src], 4);
-            }
-        }
+        atlas.entries[imagePaths[i]] = entry;
 
-        // Calculate UVs
-        float u0 = (float)xOffset / atlas.atlasWidth;
-        float u1 = (float)(xOffset + atlas.tileSize) / atlas.atlasWidth;
-        float v0 = 0.0f;
-        float v1 = 1.0f;
-
-        atlas.entries[files[i]] = { u0, v0, u1, v1 };
-
-        SDL_DestroySurface(rgba);
+        SDL_DestroySurface(tile);
     }
 
-    // Create OpenGL texture
     glCreateTextures(GL_TEXTURE_2D, 1, &atlas.textureID);
-    glTextureStorage2D(
-        atlas.textureID,
-        1,
-        GL_RGBA8,
-        atlas.atlasWidth,
-        atlas.atlasHeight
-    );
+    glTextureStorage2D(atlas.textureID, 1, GL_RGBA8, atlasSize, atlasSize);
 
     glTextureSubImage2D(
         atlas.textureID,
         0,
-        0,
-        0,
-        atlas.atlasWidth,
-        atlas.atlasHeight,
+        0, 0,
+        atlasSize,
+        atlasSize,
         GL_RGBA,
         GL_UNSIGNED_BYTE,
-        pixels.data()
+        atlasSurface->pixels
     );
 
     glTextureParameteri(atlas.textureID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTextureParameteri(atlas.textureID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTextureParameteri(atlas.textureID, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTextureParameteri(atlas.textureID, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    SDL_DestroySurface(atlasSurface);
 
     return atlas;
 }

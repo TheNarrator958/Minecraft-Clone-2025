@@ -71,51 +71,6 @@ float cubeVertices[] = {
 unsigned int cubeVAO;
 unsigned int cubeVBO;
 
-unsigned int LoadTexture(const char* path)
-{
-    SDL_Surface* surface = IMG_Load(path);
-
-    // Convert to RGBA32 for OpenGL
-    SDL_Surface* rgbaSurface = SDL_ConvertSurface(
-        surface,
-        SDL_PIXELFORMAT_RGBA32
-    );
-    SDL_DestroySurface(surface);
-
-    unsigned int texture;
-    glCreateTextures(GL_TEXTURE_2D, 1, &texture);
-
-    glTextureStorage2D(
-        texture,
-        1,
-        GL_RGBA8,
-        rgbaSurface->w,
-        rgbaSurface->h
-    );
-
-    glTextureSubImage2D(
-        texture,
-        0,
-        0,
-        0,
-        rgbaSurface->w,
-        rgbaSurface->h,
-        GL_RGBA,
-        GL_UNSIGNED_BYTE,
-        rgbaSurface->pixels
-    );
-
-    // Minecraft-style filtering
-    glTextureParameteri(texture, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTextureParameteri(texture, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTextureParameteri(texture, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTextureParameteri(texture, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    SDL_DestroySurface(rgbaSurface);
-
-    return texture;
-}
-
 int main(int argc, char* argv[]) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         std::cerr << "SDL_Init Error: " << SDL_GetError() << std::endl;
@@ -150,17 +105,16 @@ int main(int argc, char* argv[]) {
 
     // cube setup
     glCreateVertexArrays(1, &cubeVAO);
-	glCreateBuffers(1, &cubeVBO);
+    glCreateBuffers(1, &cubeVBO);
 
-    // Vertex Buffer
     glNamedBufferData(
         cubeVBO,
         sizeof(cubeVertices),
         cubeVertices,
         GL_STATIC_DRAW
-	);
+    );
 
-    // Attach Buffers
+    // Bind VBO to VAO binding slot 0
     glVertexArrayVertexBuffer(
         cubeVAO,
         0,
@@ -169,36 +123,26 @@ int main(int argc, char* argv[]) {
         5 * sizeof(float)
     );
 
-    /*unsigned int dirtBlockTexture = LoadTexture("textures/dirt_block.png");
-    unsigned int grassSideBlockTexture = LoadTexture("textures/grass_block_side.png");
-    unsigned int grassTopBlockTexture = LoadTexture("textures/grass_block_top.png");
-
-    constexpr int STRIDE = 5 * sizeof(float);*/
-
-    // Attribute 0 -> Position
+    // POSITION (location = 0)
     glEnableVertexArrayAttrib(cubeVAO, 0);
     glVertexArrayAttribFormat(cubeVAO, 0, 3, GL_FLOAT, GL_FALSE, 0);
     glVertexArrayAttribBinding(cubeVAO, 0, 0);
 
-	// Attribute 1 -> UV
+    // UV (location = 1)
     glEnableVertexArrayAttrib(cubeVAO, 1);
     glVertexArrayAttribFormat(cubeVAO, 1, 2, GL_FLOAT, GL_FALSE, 3 * sizeof(float));
     glVertexArrayAttribBinding(cubeVAO, 1, 0);
-
     // end of cube setup
 
     // texture atlas setup
-    TextureAtlas atlas = BuildAtlas({
-    "textures/dirt_block.png",
-    "textures/grass_block_side.png",
-    "textures/grass_block_top.png",
-    "textures/stone.png",
-    "textures/oak_planks.png"
-        });
+    TextureAtlas atlas = BuildAtlas ({
+        "textures/dirt_block.png",
+        "textures/grass_block_side.png",
+        "textures/grass_block_top.png",
+        "textures/stone.png",
+        "textures/oak_planks.png"
+    });
 	// end of texture atlas setup
-    AtlasEntry grassTop = atlas.entries["textures/grass_block_top.png"];
-    AtlasEntry grassSide = atlas.entries["textures/grass_block_side.png"];
-    AtlasEntry dirt = atlas.entries["textures/dirt_block.png"];
 
     SDL_ShowWindow(window);
 
@@ -242,7 +186,7 @@ int main(int argc, char* argv[]) {
         shader.Use();
 
         glBindTextureUnit(0, atlas.textureID);
-        shader.SetInt("uTexture", 0);
+        shader.SetInt("atlas", 0);
 
         glm::mat4 model = glm::mat4(1.0f);
         glm::mat4 view = camera.GetViewMatrix();
